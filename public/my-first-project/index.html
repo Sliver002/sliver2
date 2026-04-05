@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html><head></head><body>
+          <div class="raw-import-shell absolute inset-0 bg-white">
+            <iframe id="builder-import-frame" title="Imported HTML Preview" class="w-full h-full border-0 bg-white" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-downloads allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot;&gt;
+    &lt;title&gt;Candy Crush Saga • Super Boss Mode&lt;/title&gt;
+    &lt;script src=&quot;https://cdn.tailwindcss.com&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+      @import url(&quot;https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap&quot;);
+
+      body {
+        font-family: &quot;Poppins&quot;, sans-serif;
+      }
+      canvas {
+        image-rendering: crisp-edges;
+        touch-action: none;
+        cursor: grab;
+        border-radius: 20px;
+      }
+      canvas:active {
+        cursor: grabbing;
+      }
+
+      .timer-low {
+        animation: pulse 0.8s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.6;
+        }
+      }
+
+      #levels-container::-webkit-scrollbar {
+        width: 6px;
+      }
+      #levels-container::-webkit-scrollbar-thumb {
+        background: #ff6bcb;
+        border-radius: 20px;
+      }
+
+      .play-btn {
+        background: linear-gradient(145deg, #22c55e, #16a34a);
+        color: white;
+        box-shadow:
+          0 10px 15px -3px rgba(0, 0, 0, 0.4),
+          0 4px 6px -4px rgba(0, 0, 0, 0.3),
+          inset 0 -4px 8px rgba(255, 255, 255, 0.4),
+          inset 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .play-btn:active {
+        transform: translateY(4px) scale(0.95);
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.3),
+          inset 0 3px 4px rgba(0, 0, 0, 0.25);
+      }
+
+      /* CSS Glow for candies */
+      .candy-glow {
+        filter: drop-shadow(0 0 12px currentColor);
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body class=&quot;bg-gradient-to-br from-pink-500 via-purple-600 to-violet-700 min-h-screen text-white overflow-hidden&quot;&gt;
+    &lt;!-- STARTUP SCREEN --&gt;
+    &lt;div id=&quot;startup-screen&quot; class=&quot;flex flex-col items-center justify-center min-h-screen&quot;&gt;
+      &lt;div class=&quot;text-center px-6&quot;&gt;
+        &lt;div class=&quot;flex justify-center gap-8 mb-10&quot;&gt;
+          &lt;span class=&quot;text-2xl md:text-4xl&quot;&gt;🍭&lt;/span&gt;
+          &lt;h1 class=&quot;text-2xl md:text-4xl font-semibold tracking-tight text-white/90&quot;&gt;
+            Candy Crush
+          &lt;/h1&gt;
+          &lt;span class=&quot;text-2xl md:text-4xl&quot;&gt;🍬&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;h1 class=&quot;text-5xl md:text-7xl font-bold tracking-tighter mb-2&quot;&gt;Sliver2&lt;/h1&gt;
+        &lt;p class=&quot;text-xl md:text-2xl text-white/80&quot;&gt;Candy Crush&lt;/p&gt;
+        &lt;p class=&quot;mt-3 text-lg md:text-2xl text-white/70&quot;&gt;Super Boss Mode&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- MENU SCREEN --&gt;
+    &lt;div id=&quot;menu-screen&quot; class=&quot;hidden flex flex-col items-center justify-center min-h-screen px-6&quot;&gt;
+      &lt;div class=&quot;text-center mb-12 px-4&quot;&gt;
+        &lt;div class=&quot;flex justify-center gap-4 mb-6&quot;&gt;
+          &lt;span class=&quot;text-6xl&quot;&gt;🍭&lt;/span&gt;
+          &lt;h1 class=&quot;text-4xl md:text-6xl font-bold tracking-tighter&quot;&gt;Sliver2&lt;/h1&gt;
+          &lt;span class=&quot;text-6xl&quot;&gt;🍬&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;p class=&quot;mt-3 text-xl md:text-3xl text-white/90&quot;&gt;Candy Crush&lt;/p&gt;
+        &lt;p class=&quot;mt-2 text-lg md:text-2xl text-white/75&quot;&gt;Super Boss Mode&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;flex flex-col gap-4 w-full max-w-xs&quot;&gt;
+        &lt;button onclick=&quot;showLevels()&quot; class=&quot;bg-white text-pink-600 font-bold text-2xl py-6 rounded-3xl shadow-2xl hover:scale-105 active:scale-95&quot;&gt;
+          📍 LEVEL MAP
+        &lt;/button&gt;
+        &lt;button onclick=&quot;showSettings()&quot; class=&quot;bg-white/20 border-2 border-white/40 font-bold text-xl py-5 rounded-3xl hover:bg-white/30&quot;&gt;
+          ⚙️ SETTINGS
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- LEVELS SCREEN --&gt;
+    &lt;div id=&quot;levels-screen&quot; class=&quot;hidden flex flex-col min-h-screen&quot;&gt;
+      &lt;div class=&quot;p-6 flex items-center justify-between bg-black/30 sticky top-0 z-10&quot;&gt;
+        &lt;button onclick=&quot;backToMenu()&quot; class=&quot;text-xl font-medium&quot;&gt;
+          ← Back
+        &lt;/button&gt;
+        &lt;h2 class=&quot;text-3xl font-bold&quot;&gt;Level Map&lt;/h2&gt;
+      &lt;/div&gt;
+      &lt;div id=&quot;levels-container&quot; class=&quot;flex-1 p-6 overflow-y-auto&quot;&gt;
+        &lt;div id=&quot;levels-grid&quot; class=&quot;grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-6 max-w-5xl mx-auto pb-24&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div id=&quot;play-footer&quot; class=&quot;hidden fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent z-20&quot;&gt;
+        &lt;button onclick=&quot;playSelectedLevel()&quot; class=&quot;play-btn w-full max-w-xs mx-auto py-5 rounded-3xl font-bold text-2xl shadow-2xl flex items-center justify-center gap-3&quot;&gt;
+          &lt;span class=&quot;text-2xl&quot;&gt;▶&lt;/span&gt;
+          &lt;span&gt;PLAY LEVEL&lt;/span&gt;
+          &lt;span id=&quot;selected-level&quot; class=&quot;text-3xl&quot;&gt;&lt;/span&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- SETTINGS SCREEN --&gt;
+    &lt;div id=&quot;settings-screen&quot; class=&quot;hidden flex flex-col min-h-screen p-8&quot;&gt;
+      &lt;div class=&quot;max-w-md mx-auto w-full&quot;&gt;
+        &lt;h2 class=&quot;text-4xl font-bold mb-8 text-center&quot;&gt;Settings&lt;/h2&gt;
+        &lt;div class=&quot;bg-white/10 backdrop-blur-2xl rounded-3xl p-8 space-y-10&quot;&gt;
+          &lt;div&gt;
+            &lt;div class=&quot;flex justify-between items-center mb-3&quot;&gt;
+              &lt;span class=&quot;text-xl font-semibold&quot;&gt;🔊 Volume&lt;/span&gt;
+              &lt;span id=&quot;volume-value&quot; class=&quot;text-2xl font-bold&quot;&gt;80&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;input type=&quot;range&quot; id=&quot;volume-slider&quot; min=&quot;0&quot; max=&quot;100&quot; value=&quot;80&quot; class=&quot;w-full accent-pink-500 cursor-pointer&quot;&gt;
+          &lt;/div&gt;
+          &lt;button onclick=&quot;testSound()&quot; class=&quot;w-full py-4 bg-white/20 hover:bg-white/30 rounded-3xl font-semibold text-lg&quot;&gt;
+            🔊 Test Sound
+          &lt;/button&gt;
+        &lt;/div&gt;
+        &lt;button onclick=&quot;backToMenu()&quot; class=&quot;mt-10 w-full py-6 text-xl font-bold bg-white/10 hover:bg-white/20 rounded-3xl&quot;&gt;
+          ← RETURN TO MENU
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- GAME SCREEN --&gt;
+    &lt;div id=&quot;game-screen&quot; class=&quot;hidden flex flex-col min-h-screen bg-[#1a0033]&quot;&gt;
+      &lt;div class=&quot;bg-gradient-to-b from-purple-900 to-transparent p-4 flex justify-between items-center&quot;&gt;
+        &lt;button onclick=&quot;exitLevel()&quot; class=&quot;text-lg&quot;&gt;← EXIT&lt;/button&gt;
+
+        &lt;div class=&quot;flex gap-8 text-center&quot;&gt;
+          &lt;div&gt;
+            &lt;div class=&quot;text-xs opacity-70&quot;&gt;LEVEL&lt;/div&gt;
+            &lt;div id=&quot;level-num&quot; class=&quot;text-4xl font-bold&quot;&gt;1&lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div id=&quot;challenge-container&quot; class=&quot;text-center&quot;&gt;
+            &lt;div id=&quot;challenge-label&quot; class=&quot;text-xs opacity-70&quot;&gt;MOVES&lt;/div&gt;
+            &lt;div id=&quot;challenge-value&quot; class=&quot;text-4xl font-bold text-amber-300&quot;&gt;
+              25
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div&gt;
+            &lt;div class=&quot;text-xs opacity-70&quot;&gt;SCORE&lt;/div&gt;
+            &lt;div class=&quot;flex items-baseline&quot;&gt;
+              &lt;span id=&quot;score&quot; class=&quot;text-4xl font-bold&quot;&gt;0&lt;/span&gt;
+              &lt;span class=&quot;text-xl text-white/50&quot;&gt;/800&lt;/span&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;button onclick=&quot;pauseGame()&quot; class=&quot;text-3xl&quot;&gt;⏸&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;flex-1 flex items-center justify-center p-4&quot;&gt;
+        &lt;canvas id=&quot;game-canvas&quot; class=&quot;rounded-3xl&quot;&gt;&lt;/canvas&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- WIN / LOSE / PAUSE --&gt;
+    &lt;div id=&quot;win-screen&quot; class=&quot;hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50&quot;&gt;
+      &lt;div class=&quot;bg-gradient-to-br from-pink-400 to-purple-600 rounded-3xl p-10 text-center max-w-sm w-full mx-4&quot;&gt;
+        &lt;h2 class=&quot;text-5xl font-bold mb-4&quot;&gt;LEVEL COMPLETE!&lt;/h2&gt;
+        &lt;div id=&quot;stars&quot; class=&quot;flex justify-center gap-3 text-6xl my-6&quot;&gt;&lt;/div&gt;
+        &lt;div id=&quot;final-score&quot; class=&quot;text-6xl font-bold mb-8&quot;&gt;&lt;/div&gt;
+        &lt;button onclick=&quot;nextLevel()&quot; class=&quot;w-full py-5 bg-white text-pink-600 font-bold text-2xl rounded-3xl mb-3&quot;&gt;
+          NEXT LEVEL →
+        &lt;/button&gt;
+        &lt;button onclick=&quot;backToLevels()&quot; class=&quot;w-full py-5 bg-white/30 text-white font-semibold rounded-3xl&quot;&gt;
+          BACK TO MAP
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div id=&quot;lose-screen&quot; class=&quot;hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50&quot;&gt;
+      &lt;div class=&quot;bg-gradient-to-br from-red-500 to-pink-600 rounded-3xl p-10 text-center max-w-sm w-full mx-4&quot;&gt;
+        &lt;h2 id=&quot;lose-title&quot; class=&quot;text-5xl font-bold mb-6&quot;&gt;
+          CHALLENGE FAILED
+        &lt;/h2&gt;
+        &lt;div id=&quot;lose-score&quot; class=&quot;text-5xl mb-8&quot;&gt;&lt;/div&gt;
+        &lt;button onclick=&quot;restartCurrentLevel()&quot; class=&quot;w-full py-5 bg-white text-pink-600 font-bold text-2xl rounded-3xl mb-3&quot;&gt;
+          TRY AGAIN
+        &lt;/button&gt;
+        &lt;button onclick=&quot;backToLevels()&quot; class=&quot;w-full py-5 bg-white/30 text-white font-semibold rounded-3xl&quot;&gt;
+          BACK TO MAP
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div id=&quot;pause-modal&quot; class=&quot;hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50&quot;&gt;
+      &lt;div class=&quot;bg-white/10 backdrop-blur-2xl rounded-3xl p-10 text-center&quot;&gt;
+        &lt;h3 class=&quot;text-4xl font-bold mb-8&quot;&gt;PAUSED&lt;/h3&gt;
+        &lt;button onclick=&quot;resumeGame()&quot; class=&quot;w-full py-4 mb-4 bg-white text-pink-600 font-bold text-2xl rounded-3xl&quot;&gt;
+          RESUME
+        &lt;/button&gt;
+        &lt;button onclick=&quot;exitLevel()&quot; class=&quot;w-full py-4 text-xl&quot;&gt;
+          EXIT LEVEL
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+      // ================== CONSTANTS ==================
+      const ROWS = 8,
+        COLS = 8;
+      const CANDY_EMOJIS = [&quot;🍭&quot;, &quot;🍬&quot;, &quot;🍫&quot;, &quot;🧁&quot;, &quot;🍪&quot;, &quot;🍩&quot;];
+      const POWER_STRIPE = 7,
+        POWER_BOMB = 9;
+      const JELLY = 10;
+
+      let canvas, ctx, CELL;
+      let grid = [];
+      let currentLevel = 1,
+        score = 0,
+        movesLeft = 0,
+        targetScore = 0;
+      let timeLeft = 0,
+        collectTarget = 0,
+        collectType = 0,
+        jellyLeft = 0;
+      let isTimerLevel = false,
+        isCollectLevel = false,
+        isClearLevel = false;
+      let timerInterval = null;
+
+      let selectedLevelId = null;
+      let gameOver = false,
+        isProcessing = false;
+      let swipeStart = null;
+      let fallingPieces = [];
+      let progress = {};
+
+      let audioContext;
+      let volume = 80;
+
+      const LEVELS = [
+        ...Array.from({ length: 10 }, (_, i) =&gt; ({
+          id: i + 1,
+          target: 800 + i * 1400,
+          moves: Math.max(28 - i, 12),
+          type: &quot;moves&quot;,
+        })),
+        ...Array.from({ length: 8 }, (_, i) =&gt; ({
+          id: i + 11,
+          target: 1500 + i * 1700,
+          time: Math.max(90 - i * 4, 45),
+          type: &quot;time&quot;,
+        })),
+        ...Array.from({ length: 6 }, (_, i) =&gt; ({
+          id: i + 19,
+          target: 1400 + i * 1600,
+          collectCount: 15 + i * 4,
+          collectType: (i % 6) + 1,
+          type: &quot;collect&quot;,
+        })),
+        ...Array.from({ length: 6 }, (_, i) =&gt; ({
+          id: i + 25,
+          target: 1800 + i * 1900,
+          jellyCount: 14 + i * 5,
+          type: &quot;clear&quot;,
+        })),
+      ];
+
+      // ================== AUDIO - Standard Candy Crush style ==================
+      function initAudio() {
+        if (!audioContext)
+          audioContext = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
+      }
+
+      function playSound(type) {
+        if (!audioContext) return;
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain).connect(audioContext.destination);
+        gain.gain.value = (volume / 100) * 0.75;
+
+        switch (type) {
+          case &quot;match&quot;: // Classic pop
+            osc.type = &quot;sine&quot;;
+            osc.frequency.setValueAtTime(820, now);
+            osc.frequency.linearRampToValueAtTime(1240, now + 0.12);
+            gain.gain.linearRampToValueAtTime(0, now + 0.25);
+            break;
+          case &quot;powerup&quot;:
+            osc.type = &quot;triangle&quot;;
+            osc.frequency.setValueAtTime(1100, now);
+            osc.frequency.linearRampToValueAtTime(680, now + 0.35);
+            break;
+          case &quot;win&quot;:
+            osc.frequency.setValueAtTime(880, now);
+            osc.frequency.setValueAtTime(1100, now + 0.15);
+            osc.frequency.setValueAtTime(1320, now + 0.35);
+            break;
+          case &quot;lose&quot;:
+            osc.frequency.setValueAtTime(520, now);
+            osc.frequency.linearRampToValueAtTime(220, now + 0.8);
+            break;
+        }
+        osc.start(now);
+        osc.stop(now + 1.1);
+      }
+
+      function updateVolume(newVol) {
+        volume = parseInt(newVol);
+        document.getElementById(&quot;volume-value&quot;).textContent = volume;
+        localStorage.setItem(&quot;candyVolume&quot;, volume);
+      }
+
+      function testSound() {
+        initAudio();
+        playSound(&quot;match&quot;);
+      }
+
+      // ================== RESIZE &amp; GRAVITY ==================
+      function resizeCanvas() {
+        const container = document.getElementById(&quot;game-screen&quot;);
+        const maxSize = Math.min(
+          container.clientWidth - 32,
+          container.clientHeight - 140,
+        );
+        CELL = Math.floor(maxSize / COLS);
+        canvas.width = CELL * COLS;
+        canvas.height = CELL * ROWS;
+      }
+
+      function applyGravityAndRefill() {
+        let changed = false;
+        for (let c = 0; c &lt; COLS; c++) {
+          let writePos = ROWS - 1;
+          for (let r = ROWS - 1; r &gt;= 0; r--) {
+            if (grid[r][c] !== 0) {
+              if (r !== writePos) {
+                grid[writePos][c] = grid[r][c];
+                grid[r][c] = 0;
+                changed = true;
+              }
+              writePos--;
+            }
+          }
+          for (let r = writePos; r &gt;= 0; r--) {
+            grid[r][c] = Math.floor(Math.random() * 6) + 1;
+            changed = true;
+          }
+        }
+        if (changed) {
+          animateFalling();
+          setTimeout(() =&gt; {
+            const matches = findMatches();
+            if (matches.length &gt; 0) removeMatches(matches);
+            else checkWinCondition();
+          }, 280);
+        } else {
+          checkWinCondition();
+        }
+      }
+
+      function checkWinCondition() {
+        if (isTimerLevel || isCollectLevel || isClearLevel) return;
+        if (score &gt;= targetScore) endGame(true);
+      }
+
+      // ================== SMOOTH SWAP &amp; FALLING ==================
+      function animateSwap(r1, c1, r2, c2, callback) {
+        const dx = (c2 - c1) * CELL;
+        const dy = (r2 - r1) * CELL;
+        let progress = 0;
+        const start = Date.now();
+
+        function step() {
+          progress = Math.min(1, (Date.now() - start) / 160);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          drawWithOffset(r1, c1, r2, c2, dx * ease, dy * ease);
+          if (progress &lt; 1) requestAnimationFrame(step);
+          else {
+            const temp = grid[r1][c1];
+            grid[r1][c1] = grid[r2][c2];
+            grid[r2][c2] = temp;
+            callback();
+          }
+        }
+        step();
+      }
+
+      function drawWithOffset(r1, c1, r2, c2, ox, oy) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let r = 0; r &lt; ROWS; r++) {
+          for (let c = 0; c &lt; COLS; c++) {
+            let drawX = c * CELL + CELL / 2;
+            let drawY = r * CELL + CELL / 2;
+            if (r === r1 &amp;&amp; c === c1) {
+              drawX += ox;
+              drawY += oy;
+            }
+            if (r === r2 &amp;&amp; c === c2) {
+              drawX -= ox;
+              drawY -= oy;
+            }
+
+            const type = grid[r][c];
+            if (!type) continue;
+
+            ctx.font = `${CELL * 0.82}px system-ui`;
+            ctx.textAlign = &quot;center&quot;;
+            ctx.textBaseline = &quot;middle&quot;;
+            let emoji = type === JELLY ? &quot;🟦&quot; : CANDY_EMOJIS[type - 1] || &quot;💣&quot;;
+            ctx.fillText(emoji, drawX, drawY);
+          }
+        }
+      }
+
+      function animateFalling() {
+        fallingPieces = [];
+        for (let c = 0; c &lt; COLS; c++) {
+          for (let r = ROWS - 1; r &gt;= 0; r--) {
+            if (grid[r][c] === 0) {
+              let dist = 0;
+              for (let above = r - 1; above &gt;= 0; above--) {
+                if (grid[above][c]) {
+                  fallingPieces.push({
+                    type: grid[above][c],
+                    startRow: above,
+                    startCol: c,
+                    endRow: r + dist,
+                    progress: 0,
+                  });
+                  grid[above][c] = 0;
+                  dist++;
+                }
+              }
+              break;
+            }
+          }
+        }
+        if (!animationFrame) animationLoop();
+      }
+
+      let animationFrame = null;
+      function animationLoop() {
+        let still = false;
+        for (let i = fallingPieces.length - 1; i &gt;= 0; i--) {
+          fallingPieces[i].progress += 0.28;
+          if (fallingPieces[i].progress &lt; 1) still = true;
+          else fallingPieces.splice(i, 1);
+        }
+        draw();
+        if (still) animationFrame = requestAnimationFrame(animationLoop);
+        else animationFrame = null;
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let r = 0; r &lt; ROWS; r++) {
+          for (let c = 0; c &lt; COLS; c++) {
+            const type = grid[r][c];
+            if (!type) continue;
+            const x = c * CELL + CELL / 2;
+            const y = r * CELL + CELL / 2;
+
+            ctx.font = `${CELL * 0.82}px system-ui`;
+            ctx.textAlign = &quot;center&quot;;
+            ctx.textBaseline = &quot;middle&quot;;
+            let emoji = type === JELLY ? &quot;🟦&quot; : CANDY_EMOJIS[type - 1] || &quot;💣&quot;;
+            ctx.fillText(emoji, x, y);
+          }
+        }
+
+        for (let p of fallingPieces) {
+          const prog = Math.min(1, p.progress);
+          const ease = 1 - Math.pow(1 - prog, 3);
+          const bounce = Math.sin(prog * Math.PI * 2) * 6;
+          const y =
+            p.startRow * CELL +
+            (p.endRow - p.startRow) * CELL * ease +
+            CELL / 2 +
+            bounce;
+          ctx.fillText(
+            CANDY_EMOJIS[p.type - 1],
+            p.startCol * CELL + CELL / 2,
+            y,
+          );
+        }
+      }
+
+      // ================== INPUT ==================
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX =
+          e.clientX !== undefined ? e.clientX : e.touches[0].clientX;
+        const clientY =
+          e.clientY !== undefined ? e.clientY : e.touches[0].clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function handlePointerDown(e) {
+        if (isProcessing || gameOver) return;
+        const pos = getPos(e);
+        const col = Math.floor(pos.x / CELL);
+        const row = Math.floor(pos.y / CELL);
+        if (row &lt; 0 || row &gt;= ROWS || col &lt; 0 || col &gt;= COLS) return;
+        swipeStart = { row, col, x: pos.x, y: pos.y };
+      }
+
+      function handlePointerUp(e) {
+        if (!swipeStart || isProcessing || gameOver) {
+          swipeStart = null;
+          return;
+        }
+
+        const pos = getPos(e);
+        const dx = pos.x - swipeStart.x;
+        const dy = pos.y - swipeStart.y;
+
+        if (Math.hypot(dx, dy) &lt; CELL * 0.35) {
+          swipeStart = null;
+          return;
+        }
+
+        let dr = 0,
+          dc = 0;
+        if (Math.abs(dx) &gt; Math.abs(dy)) dc = dx &gt; 0 ? 1 : -1;
+        else dr = dy &gt; 0 ? 1 : -1;
+
+        const tr = swipeStart.row + dr;
+        const tc = swipeStart.col + dc;
+
+        if (tr &lt; 0 || tr &gt;= ROWS || tc &lt; 0 || tc &gt;= COLS) {
+          swipeStart = null;
+          return;
+        }
+
+        isProcessing = true;
+
+        animateSwap(swipeStart.row, swipeStart.col, tr, tc, () =&gt; {
+          const matches = findMatches();
+          if (matches.length &gt; 0) {
+            if (!isTimerLevel) movesLeft--;
+            updateHUD();
+            removeMatches(matches);
+          } else {
+            animateSwap(swipeStart.row, swipeStart.col, tr, tc, () =&gt;
+              shakeCanvas(),
+            );
+          }
+          isProcessing = false;
+          swipeStart = null;
+          draw();
+        });
+      }
+
+      function shakeCanvas() {
+        canvas.style.transform = &quot;translateX(6px)&quot;;
+        setTimeout(() =&gt; (canvas.style.transform = &quot;translateX(-6px)&quot;), 50);
+        setTimeout(() =&gt; (canvas.style.transform = &quot;&quot;), 180);
+      }
+
+      // ================== REMOVE &amp; GRAVITY ==================
+      function removeMatches(matches) {
+        if (!matches.length) return;
+        score += matches.length * 130;
+        playSound(&quot;match&quot;);
+
+        if (matches.length &gt;= 4) {
+          const center = matches[Math.floor(matches.length / 2)];
+          createPowerUp(center.r, center.c, matches.length);
+          playSound(&quot;powerup&quot;);
+        }
+
+        for (const { r, c } of matches) {
+          if (grid[r][c] === JELLY) jellyLeft--;
+          grid[r][c] = 0;
+        }
+
+        updateHUD();
+        animateFalling();
+        setTimeout(applyGravityAndRefill, 260);
+      }
+
+      function createPowerUp(r, c, count) {
+        if (count &gt;= 5) grid[r][c] = POWER_BOMB;
+        else if (count === 4) grid[r][c] = POWER_STRIPE;
+      }
+
+      function fillGrid(level) {
+        grid = Array(ROWS)
+          .fill()
+          .map(() =&gt; Array(COLS).fill(0));
+        for (let r = 0; r &lt; ROWS; r++)
+          for (let c = 0; c &lt; COLS; c++) {
+            grid[r][c] = Math.floor(Math.random() * 6) + 1;
+          }
+
+        if (level.type === &quot;clear&quot;) {
+          jellyLeft = level.jellyCount;
+          let placed = 0;
+          while (placed &lt; level.jellyCount) {
+            const r = Math.floor(Math.random() * ROWS);
+            const c = Math.floor(Math.random() * COLS);
+            if (grid[r][c] &lt;= 6) {
+              grid[r][c] = JELLY;
+              placed++;
+            }
+          }
+        }
+
+        while (findMatches().length &gt; 0) {
+          for (let r = 0; r &lt; ROWS; r++)
+            for (let c = 0; c &lt; COLS; c++) {
+              if (grid[r][c] &lt;= 6)
+                grid[r][c] = Math.floor(Math.random() * 6) + 1;
+            }
+        }
+      }
+
+      function findMatches() {
+        let matches = [];
+        for (let r = 0; r &lt; ROWS; r++) {
+          for (let c = 0; c &lt; COLS - 2; c++) {
+            if (
+              grid[r][c] &amp;&amp;
+              grid[r][c] === grid[r][c + 1] &amp;&amp;
+              grid[r][c] === grid[r][c + 2] &amp;&amp;
+              grid[r][c] &lt;= 6
+            ) {
+              for (let k = 0; k &lt; 3; k++) matches.push({ r, c: c + k });
+            }
+          }
+        }
+        for (let c = 0; c &lt; COLS; c++) {
+          for (let r = 0; r &lt; ROWS - 2; r++) {
+            if (
+              grid[r][c] &amp;&amp;
+              grid[r][c] === grid[r + 1][c] &amp;&amp;
+              grid[r][c] === grid[r + 2][c] &amp;&amp;
+              grid[r][c] &lt;= 6
+            ) {
+              for (let k = 0; k &lt; 3; k++) matches.push({ r: r + k, c });
+            }
+          }
+        }
+        const seen = new Set();
+        return matches.filter((m) =&gt; {
+          const key = `${m.r}-${m.c}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
+
+      function updateHUD() {
+        document.getElementById(&quot;level-num&quot;).textContent = currentLevel;
+        document.getElementById(&quot;score&quot;).textContent = score;
+
+        const label = document.getElementById(&quot;challenge-label&quot;);
+        const value = document.getElementById(&quot;challenge-value&quot;);
+
+        if (isTimerLevel) {
+          label.textContent = &quot;TIME&quot;;
+          value.textContent = timeLeft;
+          value.classList.toggle(&quot;timer-low&quot;, timeLeft &lt;= 15);
+        } else if (isCollectLevel) {
+          label.textContent = &quot;COLLECT&quot;;
+          value.textContent = collectTarget;
+        } else if (isClearLevel) {
+          label.textContent = &quot;JELLY&quot;;
+          value.textContent = jellyLeft;
+        } else {
+          label.textContent = &quot;MOVES&quot;;
+          value.textContent = movesLeft;
+        }
+      }
+
+      function startTimer(seconds) {
+        if (timerInterval) clearInterval(timerInterval);
+        timeLeft = seconds;
+        timerInterval = setInterval(() =&gt; {
+          timeLeft--;
+          updateHUD();
+          if (timeLeft &lt;= 0) {
+            clearInterval(timerInterval);
+            endGame(false);
+          }
+        }, 1000);
+      }
+
+      function loadLevel(id) {
+        const lvl = LEVELS.find((l) =&gt; l.id === id);
+        currentLevel = id;
+        targetScore = lvl.target;
+        score = 0;
+        gameOver = false;
+        isTimerLevel = false;
+        isCollectLevel = false;
+        isClearLevel = false;
+
+        if (timerInterval) clearInterval(timerInterval);
+
+        if (lvl.type === &quot;time&quot;) {
+          isTimerLevel = true;
+          startTimer(lvl.time);
+        } else if (lvl.type === &quot;collect&quot;) {
+          isCollectLevel = true;
+          collectTarget = lvl.collectCount;
+          collectType = lvl.collectType;
+        } else if (lvl.type === &quot;clear&quot;) {
+          isClearLevel = true;
+          jellyLeft = lvl.jellyCount;
+        } else {
+          movesLeft = lvl.moves;
+        }
+
+        fillGrid(lvl);
+        hideAllScreens();
+        document.getElementById(&quot;game-screen&quot;).classList.remove(&quot;hidden&quot;);
+        resizeCanvas();
+        draw();
+        updateHUD();
+      }
+
+      function playSelectedLevel() {
+        if (selectedLevelId) loadLevel(selectedLevelId);
+      }
+
+      function endGame(won) {
+        if (timerInterval) clearInterval(timerInterval);
+        gameOver = true;
+        playSound(won ? &quot;win&quot; : &quot;lose&quot;);
+
+        if (won) {
+          const stars =
+            score &gt;= targetScore * 1.5 ? 3 : score &gt;= targetScore * 1.2 ? 2 : 1;
+          progress[currentLevel] = { completed: true, stars };
+          localStorage.setItem(&quot;candyProgress&quot;, JSON.stringify(progress));
+
+          document.getElementById(&quot;final-score&quot;).textContent = score;
+          document.getElementById(&quot;stars&quot;).innerHTML = Array(3)
+            .fill()
+            .map(
+              (_, i) =&gt;
+                `&lt;span class=&quot;${i &lt; stars ? &quot;text-yellow-300&quot; : &quot;text-white/30&quot;}&quot;&gt;⭐&lt;/span&gt;`,
+            )
+            .join(&quot;&quot;);
+          hideAllScreens();
+          document.getElementById(&quot;win-screen&quot;).classList.remove(&quot;hidden&quot;);
+        } else {
+          document.getElementById(&quot;lose-title&quot;).textContent = isTimerLevel
+            ? &quot;TIME'S UP&quot;
+            : isClearLevel
+              ? &quot;JELLY REMAINING&quot;
+              : &quot;CHALLENGE FAILED&quot;;
+          document.getElementById(&quot;lose-score&quot;).innerHTML =
+            `Score: &lt;span class=&quot;text-amber-300&quot;&gt;${score}&lt;/span&gt;`;
+          hideAllScreens();
+          document.getElementById(&quot;lose-screen&quot;).classList.remove(&quot;hidden&quot;);
+        }
+      }
+
+      function nextLevel() {
+        loadLevel(Math.min(currentLevel + 1, LEVELS.length));
+      }
+      function restartCurrentLevel() {
+        loadLevel(currentLevel);
+      }
+      function exitLevel() {
+        if (timerInterval) clearInterval(timerInterval);
+        hideAllScreens();
+        document.getElementById(&quot;menu-screen&quot;).classList.remove(&quot;hidden&quot;);
+      }
+
+      function showLevels() {
+        hideAllScreens();
+        selectedLevelId = null;
+        document.getElementById(&quot;play-footer&quot;).classList.add(&quot;hidden&quot;);
+
+        const container = document.getElementById(&quot;levels-grid&quot;);
+        container.innerHTML = &quot;&quot;;
+
+        LEVELS.forEach((lvl) =&gt; {
+          const completed = progress[lvl.id]?.completed;
+          const unlocked = lvl.id === 1 || progress[lvl.id - 1]?.completed;
+
+          const btn = document.createElement(&quot;button&quot;);
+          btn.className = `aspect-square rounded-3xl text-4xl font-bold shadow-xl flex flex-col items-center justify-center ${completed ? &quot;bg-gradient-to-br from-yellow-300 to-pink-300 text-pink-900&quot; : &quot;bg-white/10&quot;}`;
+          if (!unlocked) {
+            btn.innerHTML = `🔒&lt;div class=&quot;text-xl mt-1&quot;&gt;${lvl.id}&lt;/div&gt;`;
+            btn.disabled = true;
+          } else {
+            let icon = &quot;&quot;;
+            if (lvl.type === &quot;time&quot;) icon = &quot;⏱&quot;;
+            else if (lvl.type === &quot;collect&quot;) icon = &quot;🎯&quot;;
+            else if (lvl.type === &quot;clear&quot;) icon = &quot;🟦&quot;;
+            btn.innerHTML =
+              lvl.id + (icon ? `&lt;div class='text-xs mt-1'&gt;${icon}&lt;/div&gt;` : &quot;&quot;);
+            btn.onclick = () =&gt; {
+              document
+                .querySelectorAll(&quot;#levels-grid button&quot;)
+                .forEach((b) =&gt; b.classList.remove(&quot;ring-4&quot;, &quot;ring-white&quot;));
+              btn.classList.add(&quot;ring-4&quot;, &quot;ring-white&quot;);
+              selectedLevelId = lvl.id;
+              document.getElementById(&quot;selected-level&quot;).textContent = lvl.id;
+              document.getElementById(&quot;play-footer&quot;).classList.remove(&quot;hidden&quot;);
+            };
+          }
+          container.appendChild(btn);
+        });
+
+        document.getElementById(&quot;levels-screen&quot;).classList.remove(&quot;hidden&quot;);
+      }
+
+      function hideAllScreens() {
+        document
+          .querySelectorAll(
+            &quot;#menu-screen, #levels-screen, #game-screen, #win-screen, #lose-screen, #pause-modal, #settings-screen, #startup-screen&quot;,
+          )
+          .forEach((el) =&gt; el.classList.add(&quot;hidden&quot;));
+      }
+
+      function backToMenu() {
+        hideAllScreens();
+        document.getElementById(&quot;menu-screen&quot;).classList.remove(&quot;hidden&quot;);
+      }
+      function backToLevels() {
+        hideAllScreens();
+        showLevels();
+      }
+      function showSettings() {
+        hideAllScreens();
+        document.getElementById(&quot;settings-screen&quot;).classList.remove(&quot;hidden&quot;);
+        const savedVolume = localStorage.getItem(&quot;candyVolume&quot;);
+        if (savedVolume) {
+          volume = parseInt(savedVolume);
+          document.getElementById(&quot;volume-slider&quot;).value = volume;
+          document.getElementById(&quot;volume-value&quot;).textContent = volume;
+        }
+      }
+
+      function pauseGame() {
+        document.getElementById(&quot;pause-modal&quot;).classList.remove(&quot;hidden&quot;);
+      }
+      function resumeGame() {
+        document.getElementById(&quot;pause-modal&quot;).classList.add(&quot;hidden&quot;);
+      }
+
+      function showStartup() {
+        document.getElementById(&quot;startup-screen&quot;).classList.remove(&quot;hidden&quot;);
+        setTimeout(() =&gt; {
+          document.getElementById(&quot;startup-screen&quot;).classList.add(&quot;hidden&quot;);
+          document.getElementById(&quot;menu-screen&quot;).classList.remove(&quot;hidden&quot;);
+        }, 1600);
+      }
+
+      function initializeGame() {
+        canvas = document.getElementById(&quot;game-canvas&quot;);
+        ctx = canvas.getContext(&quot;2d&quot;);
+
+        const saved = localStorage.getItem(&quot;candyProgress&quot;);
+        if (saved) progress = JSON.parse(saved);
+
+        const savedVolume = localStorage.getItem(&quot;candyVolume&quot;);
+        if (savedVolume) volume = parseInt(savedVolume);
+
+        const slider = document.getElementById(&quot;volume-slider&quot;);
+        slider.value = volume;
+        document.getElementById(&quot;volume-value&quot;).textContent = volume;
+        slider.addEventListener(&quot;input&quot;, (e) =&gt; updateVolume(e.target.value));
+
+        canvas.addEventListener(&quot;mousedown&quot;, handlePointerDown);
+        canvas.addEventListener(&quot;mouseup&quot;, handlePointerUp);
+        canvas.addEventListener(&quot;touchstart&quot;, (e) =&gt; {
+          e.preventDefault();
+          handlePointerDown(e);
+        });
+        canvas.addEventListener(&quot;touchend&quot;, (e) =&gt; {
+          e.preventDefault();
+          handlePointerUp(e);
+        });
+
+        window.addEventListener(&quot;resize&quot;, () =&gt; {
+          if (
+            !document.getElementById(&quot;game-screen&quot;).classList.contains(&quot;hidden&quot;)
+          ) {
+            resizeCanvas();
+            draw();
+          }
+        });
+
+        document.body.addEventListener(&quot;click&quot;, initAudio, { once: true });
+
+        showStartup();
+        console.log(
+          &quot;%c🏆 SUPER BOSS MODE — Clean &amp; Smooth with CSS Glows!&quot;,
+          &quot;color:#22c55e; font-weight:bold; font-size:16px&quot;,
+        );
+      }
+
+      window.onload = initializeGame;
+    &lt;/script&gt;
+  
+
+&lt;/body&gt;&lt;/html&gt;"></iframe>
+          </div>
+        </body></html>
